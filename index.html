@@ -3,81 +3,76 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>燈泡調色盤</title>
-<script>
-// === MQTT 連線 HiveMQ Cloud（用你自己的 cluster）===
-const client = mqtt.connect('wss://c15f9e95fc2e43a8bc949b3b4849d189.s1.eu.hivemq.cloud:8884/mqtt', {
-  username: 'aaeonshm487',
-  password: 'Aaeonm487'
-});
+  <title>智慧燈泡調色盤</title>
 
-client.on('connect', () => {
-  console.log('Web 已連上 MQTT');
-});
+  <!-- 必須先載入這兩個庫 -->
+  <script src="https://cdn.jsdelivr.net/npm/@jaames/iro@5"></script>
+  <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
 
-// === 燈泡與色盤 ===
-const bulb = document.getElementById('bulb');
-const picker = new iro.ColorPicker("#picker", { width: 320 });
-let isOn = true;
-
-picker.on('color:change', color => {
-  if (!isOn) return;
-  const rgb = color.rgb;
-  bulb.style.color = color.hexString;
-  bulb.style.background = color.hexString;
-
-  // 發送 RGB
-  client.publish('home/light/color', `${rgb.r},${rgb.g},${rgb.b}`);
-  // 發送亮度（0~100）
-  client.publish('home/light/brightness', Math.round(color.value));
-});
-
-// 開關燈按鈕
-document.querySelector('button').onclick = () => {
-  isOn = !isOn;
-  if (isOn) {
-    // 開燈 → 用當前顏色
-    const current = picker.color.rgb;
-    bulb.style.color = picker.color.hexString;
-    bulb.style.background = picker.color.hexString;
-    client.publish('device_recv', 'open relay');
-    client.publish('home/light/color', `${current.r},${current.g},${current.b}`);
-  } else {
-    // 關燈
-    bulb.style.color = "#000";
-    bulb.style.background = "#333";
-    client.publish('device_recv', 'colse relay');
-  }
-};
-</script>
   <style>
     body { background: #111; color: white; font-family: sans-serif; text-align: center; padding: 20px; }
     #bulb { width: 200px; height: 200px; border-radius: 50%; margin: 30px auto; box-shadow: 0 0 60px 30px currentColor; transition: all 0.4s; }
-    button { padding: 15px 30px; font-size: 18px; margin: 20px; }
+    button { padding: 18px 40px; font-size: 20px; margin: 20px; border-radius: 12px; background:#333; border:none; color:white; }
+    button:active { background:#555; }
   </style>
 </head>
 <body>
   <h1>智慧燈泡調色盤</h1>
   <div id="bulb" style="background:#fff;color:#fff"></div>
   <div id="picker"></div>
-  <button onclick="fetch('/off')">關燈</button>
+  <button id="powerBtn">關燈</button>
 
+  <!-- 唯一一段 script，全部功能都在這 -->
   <script>
+    console.log("開始連線 MQTT...");
+
+    // MQTT 連線你的 HiveMQ Cloud
+    const client = mqtt.connect('wss://c15f9e95fc2e43a8bc949b3b4849d189.s1.eu.hivemq.cloud:8884/mqtt', {
+      username: 'aaeonshm487',
+      password: 'Aaeonm487'
+    });
+
+    client.on('connect', () => {
+      console.log("成功連上 HiveMQ Cloud！");
+    });
+
+    client.on('error', (err) => {
+      console.error("MQTT 連線失敗：", err);
+    });
+
+    // 燈泡與色盤
     const bulb = document.getElementById('bulb');
     const picker = new iro.ColorPicker("#picker", { width: 320 });
-    
+    const powerBtn = document.getElementById('powerBtn');
+    let isOn = true;
+
+    // 調色盤改變
     picker.on('color:change', color => {
+      if (!isOn) return;
       const rgb = color.rgb;
       bulb.style.color = color.hexString;
       bulb.style.background = color.hexString;
-      fetch(`/rgb?r=${rgb.r}&g=${rgb.g}&b=${rgb.b}`);
+
+      client.publish('home/light/color', `${rgb.r},${rgb.g},${rgb.b}`);
+      client.publish('home/light/brightness', Math.round(color.value));
     });
 
-    function off() {
-      bulb.style.color = "#000";
-      bulb.style.background = "#333";
-      fetch('/off');
-    }
+    // 開關按鈕
+    powerBtn.onclick = () => {
+      isOn = !isOn;
+      if (isOn) {
+        powerBtn.textContent = '關燈';
+        const c = picker.color.rgb;
+        bulb.style.color = picker.color.hexString;
+        bulb.style.background = picker.color.hexString;
+        client.publish('device_recv', 'open relay');
+      } else {
+        powerBtn.textContent = '開燈';
+        bulb.style.color = "#000";
+        bulb.style.background = "#333";
+        client.publish('device_recv', 'close relay');  // 修正拼字
+      }
+    };
   </script>
 </body>
 </html>
