@@ -1,0 +1,5 @@
+{
+  "startCommand": "node server.js",
+  "buildCommand": "",
+  "rootDirectory": "."
+}
