@@ -1,19 +1,25 @@
 const express = require('express');
+const path = require('path');
 const app = express();
 
+// 伺服靜態檔案
 app.use(express.static(__dirname));
 
+// 處理所有路由都回 index.html
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+// 接收顏色
 app.get('/rgb', (req, res) => {
-  const {r,g,b} = req.query;
-  console.log(`燈泡顏色 → RGB(${r},${g},${b})`);
-  // 在這裡你可以接 ESP32、ESP8266、MQTT、WebSocket、UART… 隨你
-  res.sendStatus(200);
+  console.log('收到顏色:', req.query);
+  // 這裡之後可以轉發給 ESP32、MQTT、WebSocket…
+  res.send('OK');
 });
 
 app.get('/off', (req, res) => {
-  console.log("燈泡關閉");
-  res.sendStatus(200);
+  console.log('關燈');
+  res.send('OFF');
 });
 
-const port = process.env.PORT || 3000;
-app.listen(port, () => console.log('調色盤上線：', port));
+app.listen(process.env.PORT || 3000);
