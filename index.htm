@@ -41,13 +41,13 @@ document.querySelector('button').onclick = () => {
     const current = picker.color.rgb;
     bulb.style.color = picker.color.hexString;
     bulb.style.background = picker.color.hexString;
-    client.publish('home/light/switch', 'ON');
+    client.publish('device_recv', 'open relay');
     client.publish('home/light/color', `${current.r},${current.g},${current.b}`);
   } else {
     // 關燈
     bulb.style.color = "#000";
     bulb.style.background = "#333";
-    client.publish('home/light/switch', 'OFF');
+    client.publish('device_recv', 'colse relay');
   }
 };
 </script>
