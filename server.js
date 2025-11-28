@@ -22,4 +22,6 @@ app.get('/off', (req, res) => {
   res.send('OFF');
 });
 
-app.listen(process.env.PORT || 3000);
+app.listen(process.env.PORT || 3000, () => {
+  console.log("Server running on PORT:", process.env.PORT || 3000);
+});
