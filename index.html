@@ -4,7 +4,52 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>燈泡調色盤</title>
-  <script src="https://cdn.jsdelivr.net/npm/@jaames/iro@5"></script>
+<script>
+// === MQTT 連線 HiveMQ Cloud（用你自己的 cluster）===
+const client = mqtt.connect('wss://c15f9e95fc2e43a8bc949b3b4849d189.s1.eu.hivemq.cloud:8884/mqtt', {
+  username: 'aaeonshm487',
+  password: 'Aaeonm487'
+});
+
+client.on('connect', () => {
+  console.log('Web 已連上 MQTT');
+});
+
+// === 燈泡與色盤 ===
+const bulb = document.getElementById('bulb');
+const picker = new iro.ColorPicker("#picker", { width: 320 });
+let isOn = true;
+
+picker.on('color:change', color => {
+  if (!isOn) return;
+  const rgb = color.rgb;
+  bulb.style.color = color.hexString;
+  bulb.style.background = color.hexString;
+
+  // 發送 RGB
+  client.publish('home/light/color', `${rgb.r},${rgb.g},${rgb.b}`);
+  // 發送亮度（0~100）
+  client.publish('home/light/brightness', Math.round(color.value));
+});
+
+// 開關燈按鈕
+document.querySelector('button').onclick = () => {
+  isOn = !isOn;
+  if (isOn) {
+    // 開燈 → 用當前顏色
+    const current = picker.color.rgb;
+    bulb.style.color = picker.color.hexString;
+    bulb.style.background = picker.color.hexString;
+    client.publish('device_recv', 'open relay');
+    client.publish('home/light/color', `${current.r},${current.g},${current.b}`);
+  } else {
+    // 關燈
+    bulb.style.color = "#000";
+    bulb.style.background = "#333";
+    client.publish('device_recv', 'colse relay');
+  }
+};
+</script>
   <style>
     body { background: #111; color: white; font-family: sans-serif; text-align: center; padding: 20px; }
     #bulb { width: 200px; height: 200px; border-radius: 50%; margin: 30px auto; box-shadow: 0 0 60px 30px currentColor; transition: all 0.4s; }
