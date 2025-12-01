@@ -32,13 +32,20 @@
       password: 'Aaeonm487'
     });
 
-    client.on('connect', () => {
-      console.log("成功連上 HiveMQ Cloud！");
+  client.on('connect', () => {
+      console.log("MQTT 連線成功！正在訂閱 server_recv ...");
+      client.subscribe('server_recv', (err) => {
+        if (!err) {
+          console.log("成功訂閱 server_recv，所有網頁現在會即時同步！");
+        } else {
+          console.error("訂閱失敗：", err);
+        }
+      });
     });
 
-    client.on('error', (err) => {
-      console.error("MQTT 連線失敗：", err);
-    });
+  client.on('error', (err) => {
+    console.error("MQTT 連線失敗：", err);
+  });
 
     // 關鍵：接收 ESP32 發來的開關指令
   client.on('message', (topic, message) => {
