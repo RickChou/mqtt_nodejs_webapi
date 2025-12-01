@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>智慧燈泡調色盤</title>
+
+  <!-- 必須先載入這兩個庫 -->
+  <script src="https://cdn.jsdelivr.net/npm/@jaames/iro@5"></script>
+  <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+
+  <style>
+    body { background: #111; color: white; font-family: sans-serif; text-align: center; padding: 20px; }
+    #bulb { width: 200px; height: 200px; border-radius: 50%; margin: 30px auto; box-shadow: 0 0 60px 30px currentColor; transition: all 0.4s; }
+    button { padding: 18px 40px; font-size: 20px; margin: 20px; border-radius: 12px; background:#333; border:none; color:white; }
+    button:active { background:#555; }
+  </style>
+</head>
+<body>
+  <h1>智慧燈泡調色盤</h1>
+  <div id="bulb" style="background:#fff;color:#fff"></div>
+  <div id="picker"></div>
+  <button id="powerBtn">關燈</button>
+
+  <!-- 唯一一段 script，全部功能都在這 -->
+  <script>
+    console.log("開始連線 MQTT...");
+
+    // MQTT 連線你的 HiveMQ Cloud
+    const client = mqtt.connect('wss://c15f9e95fc2e43a8bc949b3b4849d189.s1.eu.hivemq.cloud:8884/mqtt', {
+      username: 'aaeonshm487',
+      password: 'Aaeonm487'
+    });
+
+  client.on('connect', () => {
+      console.log("MQTT 連線成功！正在訂閱 server_recv ...");
+      client.subscribe('server_recv', (err) => {
+        if (!err) {
+          console.log("成功訂閱 server_recv，所有網頁現在會即時同步！");
+        } else {
+          console.error("訂閱失敗：", err);
+        }
+      });
+    });
+
+  client.on('error', (err) => {
+    console.error("MQTT 連線失敗：", err);
+  });
+
+    // 關鍵：接收 ESP32 發來的開關指令
+  client.on('message', (topic, message) => {
+    const payload = message.toString();
+    console.log(`收到訊息 → ${topic}: ${payload}`);
+
+    if (topic === 'server_recv') {
+      if (payload === 'relay open OK') {
+        isOn = true;
+        powerBtn.textContent = '關燈';
+        const c = picker.color.rgb;
+        bulb.style.color = picker.color.hexString;
+        bulb.style.background = picker.color.hexString;
+      } else if (payload === 'relay close OK') {
+        isOn = false;
+        powerBtn.textContent = '開燈';
+        bulb.style.color = "#000";
+        bulb.style.background = "#333";
+      }
+    }
+  });
+    
+    // 燈泡與色盤
+    const bulb = document.getElementById('bulb');
+    const picker = new iro.ColorPicker("#picker", { width: 320 });
+    const powerBtn = document.getElementById('powerBtn');
+    let isOn = true;
+
+    // 調色盤改變
+    picker.on('color:change', color => {
+      if (!isOn) return;
+      const rgb = color.rgb;
+      bulb.style.color = color.hexString;
+      bulb.style.background = color.hexString;
+
+      client.publish('home/light/color', `${rgb.r},${rgb.g},${rgb.b}`);
+      client.publish('home/light/brightness', String(Math.round(color.value)));
+    });
+
+    // 開關按鈕
+    powerBtn.onclick = () => {
+      isOn = !isOn;
+      if (isOn) {
+        powerBtn.textContent = '關燈';
+        const c = picker.color.rgb;
+        bulb.style.color = picker.color.hexString;
+        bulb.style.background = picker.color.hexString;
+        client.publish('device_recv', 'open relay');
+      } else {
+        powerBtn.textContent = '開燈';
+        bulb.style.color = "#000";
+        bulb.style.background = "#333";
+        client.publish('device_recv', 'close relay');  // 修正拼字
+      }
+    };
+  </script>
+</body>
+</html>

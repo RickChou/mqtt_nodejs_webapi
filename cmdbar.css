@@ -1,0 +1,21 @@
+H6 {
+	FONT-SIZE: 9pt; FONT-FAMILY: verdana, Arial, Helvetica
+}
+BODY {
+	FONT-SIZE: 9pt; FONT-FAMILY: verdana, Arial, Helvetica
+}
+:link {
+	FONT-SIZE: 9pt; COLOR: blue; FONT-FAMILY: verdana, Arial, Helvetica; TEXT-DECORATION: none
+}
+:active {
+	FONT-SIZE: 9pt; COLOR: blue; FONT-FAMILY: verdana, Arial, Helvetica; TEXT-DECORATION: none
+}
+A:hover {
+	FONT-SIZE: 9pt; COLOR: #66ffff; FONT-FAMILY: verdana, Arial, Helvetica; TEXT-DECORATION: none
+}
+:visited {
+	FONT-SIZE: 9pt; COLOR: blue; FONT-FAMILY: verdana, Arial, Helvetica; TEXT-DECORATION: none
+}
+TD {
+	FONT-FAMILY: verdana, Arial, Helvetica
+}

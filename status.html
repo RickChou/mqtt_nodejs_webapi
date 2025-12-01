@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SH-M487 Demo</title>
+  
+  <!-- 強制不快取（你原本的需求） -->
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Expires" content="0" />
+
+  <style>
+    /* 滿版置中 + 超大字 */
+    body, html {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      background: #000;                    /* 黑色背景，你可以改 */
+      color: #0d6fd1;                      /* 你原本的藍色 #0d6fd1ff */
+      font-family: "Microsoft JhengHei", Arial, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+    
+    .big-title {
+      font-size: 9vw;        /* 隨著螢幕寬度自動放大（手機電腦都好看） */
+      font-weight: bold;
+      letter-spacing: 8px;
+      text-shadow: 0 0 30px #0d6fd1,
+                   0 0 60px #0d6fd1;
+      animation: glow 2s ease-in-out infinite alternate;
+    }
+
+    @media (max-width: 768px) {
+      .big-title { font-size: 14vw; }   /* 手機更大 */
+    }
+
+    /* 發光動畫（可刪） */
+    @keyframes glow {
+      from { text-shadow: 0 0 20px #0d6fd1; }
+      to   { text-shadow: 0 0 60px #0d6fd1, 0 0 100px #0d6fd1; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="big-title">SH-M487 Demo</div>
+</body>
+</html>

@@ -1,0 +1,126 @@
+body {
+	/* background-color: #CCCCCC; */
+	background-color: #FFFFFF;
+}
+.B1 {
+	font: 12px "Arial";
+	text-align: center;
+}
+.B2 {
+	font: 11px "Arial";
+	width:70;
+	text-align: center;
+}
+.B3 {
+	font: 11px "Arial Black";
+	width:200;
+    height:25;
+	text-align: center;
+}
+.B4 {
+	font: 10px "Arial";
+	width:180;
+    height:19;
+	text-align: center;
+}
+.B5 {
+	font: 15px "Arial";
+}
+.b20 {
+	font-family: Arial;
+	font-size: 20px;
+	font-style: oblique;
+	line-height: 2ex;
+	font-weight: bolder;
+	color: #0000FF;
+}
+
+.b21 {
+	font-family: Arial;
+	font-size: 20px;
+	font-style: oblique;
+	line-height: 2ex;
+	font-weight: bolder;
+	color: #0d6fd1ff;
+}
+
+.k12b {
+	font-family: Arial;
+	font-size: 12px;
+	font-weight: bold;
+	color: #000000;
+	text-decoration: none;
+	text-indent: 10pt;
+}
+.k15b {
+	font-family: Arial;
+	font-size: 15px;
+	font-weight: bold;
+	color: #000000;
+	text-decoration: none;
+}
+.k12 {
+	font-family: Arial;
+	font-size: 12px;
+	color: #000000;
+}
+.b12b {
+	font-family: Arial;
+	font-size: 12px;
+	color: #0d6fd1ff;
+	font-weight: bold;
+}
+.b15b {
+	font-family: Arial;
+	font-size: 15px;
+	color: #0d6fd1ff;
+	font-weight: bold;
+}
+.R12b {
+
+	font-family: Arial;
+	font-size: 12px;
+	color: #FF0000;
+	font-weight: bold;
+}
+.R15b {
+
+	font-family: Arial;
+	font-size: 15px;
+	color: #FF0000;
+	font-weight: bold;
+}
+.R12 {
+
+	font-family: Arial;
+	font-size: 12px;
+	color: #FF0000;
+}
+.G12 {
+	font-family: Arial;
+	font-size: 12px;
+	color: #009900;
+	font-weight: bold;
+}
+.R12b {
+	font-family: Arial;
+	font-size: 12px;
+	color: #FF0000;
+	font-weight: bold;
+}
+a:link {
+	color: #0000FF;
+}
+a:visited {
+	color: #0000FF;
+}
+a:hover {
+	color: #000000;
+}
+a:active {
+	color: #0000FF;
+}
+.content-container {
+    margin-left: 60px;
+    margin-right: 30px;
+}
