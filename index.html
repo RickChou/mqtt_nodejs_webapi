@@ -53,13 +53,13 @@
     console.log(`收到訊息 → ${topic}: ${payload}`);
 
     if (topic === 'server_recv') {
-      if (payload === 'open relay OK') {
+      if (payload === 'relay open OK') {
         isOn = true;
         powerBtn.textContent = '關燈';
         const c = picker.color.rgb;
         bulb.style.color = picker.color.hexString;
         bulb.style.background = picker.color.hexString;
-      } else if (payload === 'close relay OK') {
+      } else if (payload === 'relay close OK') {
         isOn = false;
         powerBtn.textContent = '開燈';
         bulb.style.color = "#000";
